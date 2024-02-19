@@ -1,0 +1,86 @@
+body {
+  background-color: #fafad2;
+  font-family: "Zen Maru Gothic", serif;
+  
+}
+
+.container {
+  max-width: 700px;
+  margin: 0 auto;
+  background-color: #fff;
+  height: 100vh;
+  padding: 8px;
+}
+
+h1 {
+  text-align: center;
+  border-bottom: 2px solid #ccc;
+}
+
+.tab {
+  display: flex;
+}
+
+.tab > button {
+  flex: 1 1 auto;
+  padding: 8px 0;
+  border: 2px solid #aaa;
+  background-color: #fff;
+  font-size: 20px;
+  border-radius: 8px 8px 0 0;
+}
+
+.tab > button.active {
+  font-size: 24px;
+  color: #fff;
+  background-color: #deb887;
+}
+
+.ul.active {
+  display: block;
+}
+
+.ul {
+  display: none;
+}
+
+li {
+  border-left: 3px solid #00ff00;
+  padding: 8px;
+  margin: 8px 0 0;
+  list-style: none;
+}
+
+.done {
+  text-decoration: line-through;
+  color: #aaa;
+}
+
+form {
+  text-align: center;
+  display: flex;
+}
+
+form input {
+  flex: 1 1 auto;
+  padding: 4px;
+}
+
+.add {
+  border: 2px solid #00ff00;
+  background-color: #fff;
+  color: #32cd32;
+  padding: 4px;
+}
+
+#removeAll {
+  border: 2px solid red;
+  background-color: #fff;
+  color: #dc143c;
+}
+
+.copy {
+  font-size: 12px;
+  text-align: center;
+  color: #333;
+}
