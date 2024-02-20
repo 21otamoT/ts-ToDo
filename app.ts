@@ -97,10 +97,16 @@ const add = () => {
 
 // クリックで完了
 const doneTodo = (li:HTMLElement, tabId:string) => {
-  li.addEventListener('click', () => {
+  li.addEventListener('click', (e) => {
     const checkbox = <HTMLInputElement>document.querySelector('input[type = "checkbox"]');
+    if(e.target === checkbox) return;
     checkbox.checked = !checkbox.checked;
-    li.classList.toggle('done');
+    if(checkbox.checked) {
+      li.classList.toggle('done');
+    }
+    else {
+      li.classList.remove('done');
+    }
     saveData(tabId);
   });
 }

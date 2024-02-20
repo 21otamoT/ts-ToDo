@@ -74,10 +74,17 @@ var add = function () {
 };
 // クリックで完了
 var doneTodo = function (li, tabId) {
-    li.addEventListener('click', function () {
+    li.addEventListener('click', function (e) {
         var checkbox = document.querySelector('input[type = "checkbox"]');
+        if (e.target === checkbox)
+            return;
         checkbox.checked = !checkbox.checked;
-        li.classList.toggle('done');
+        if (checkbox.checked) {
+            li.classList.toggle('done');
+        }
+        else {
+            li.classList.remove('done');
+        }
         saveData(tabId);
     });
 };
