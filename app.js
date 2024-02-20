@@ -37,10 +37,7 @@ var loadToDos = function (tabId) {
         var todos = JSON.parse(json);
         todos.map(function (todo) {
             var li = document.createElement('li');
-            var checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
             li.innerText = todo.text;
-            li.prepend(checkbox);
             if (todo.completed)
                 li.classList.add('done');
             ul.appendChild(li);
@@ -59,10 +56,7 @@ var add = function () {
     var tabId = activeTab.getAttribute('data-id');
     var ul = document.querySelector(".ul#".concat(tabId, " > ul"));
     var li = document.createElement('li');
-    var checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
     li.innerText = todoText;
-    li.prepend(checkbox);
     ul.appendChild(li);
     input.value = '';
     // クリックで完了
@@ -74,17 +68,8 @@ var add = function () {
 };
 // クリックで完了
 var doneTodo = function (li, tabId) {
-    li.addEventListener('click', function (e) {
-        var checkbox = document.querySelector('input[type = "checkbox"]');
-        if (e.target === checkbox)
-            return;
-        checkbox.checked = !checkbox.checked;
-        if (checkbox.checked) {
-            li.classList.toggle('done');
-        }
-        else {
-            li.classList.remove('done');
-        }
+    li.addEventListener('click', function () {
+        li.classList.toggle('done');
         saveData(tabId);
     });
 };
