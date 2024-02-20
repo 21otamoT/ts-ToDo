@@ -50,10 +50,7 @@ const loadToDos = (tabId: string) => {
     const todos: ToDo[] = JSON.parse(json);
     todos.map(todo => {
       const li = document.createElement('li');
-      const checkbox = document.createElement('input');
-      checkbox.type = 'checkbox';
       li.innerText = todo.text;
-      li.prepend(checkbox);
       if (todo.completed) li.classList.add('done');
       ul.appendChild(li);
 
@@ -75,13 +72,8 @@ const add = () => {
   const tabId = <string>activeTab.getAttribute('data-id');
 
   const ul = <Element>document.querySelector(`.ul#${tabId} > ul`);
-
   const li = document.createElement('li');
-  const checkbox = document.createElement('input');
-  checkbox.type = 'checkbox';
   li.innerText = todoText;
-  li.prepend(checkbox);
-
   ul.appendChild(li);
   input.value = '';
 
@@ -97,17 +89,9 @@ const add = () => {
 
 // クリックで完了
 const doneTodo = (li:HTMLElement, tabId:string) => {
-  li.addEventListener('click', (e) => {
-    const checkbox = <HTMLInputElement>document.querySelector('input[type = "checkbox"]');
-    if(e.target === checkbox) return;
-    checkbox.checked = !checkbox.checked;
-    if(checkbox.checked) {
-      li.classList.toggle('done');
-    }
-    else {
-      li.classList.remove('done');
-    }
-    saveData(tabId);
+  li.addEventListener('click', () => {
+  li.classList.toggle('done');
+  saveData(tabId);
   });
 }
 
