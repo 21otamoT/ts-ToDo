@@ -1,117 +1,135 @@
-interface ToDos {
-  text: string,
-  complated: boolean
+interface ToDo {
+  text: string;
+  completed: boolean;
 }
 
 const input = <HTMLInputElement>document.getElementById('input');
 const form = <HTMLElement>document.getElementById('form');
-const json = <string>localStorage.getItem('todos');
-let todos = [];
+const removeAllButton = <HTMLElement>document.getElementById('removeAll');
+const tabButtons = document.querySelectorAll('.tab > button');
+const uls = document.querySelectorAll('.ul');
 
-// タブ切り替え
 const tab = () => {
-  const btns = document.querySelectorAll('.tab > button');
-  const uls = document.querySelectorAll('.ul');
-  btns.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-          btns.forEach(function (btn) {
-              btn.classList.remove('active');
-          });
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // タブの切り替え
+      tabButtons.forEach(btn => btn.classList.remove('active'));
+      uls.forEach(ul => ul.classList.remove('active'));
 
-          uls.forEach(function (ul) {
-              ul.classList.remove('active');
-          });
+      btn.classList.add('active');
+      const tabId = <string>btn.getAttribute('data-id');
+      const tabContent = <HTMLElement>document.getElementById(tabId);
+      tabContent.classList.add('active');
 
-          btn.classList.add('active');
-
-          let tabId = <string>btn.getAttribute('data-id');
-
-          const tabcontent = <HTMLElement>document.getElementById(tabId);
-          tabcontent.classList.add('active');
-      });
-  });
-};
-
-const saveData = () => {
-  const lists = Array.from(document.querySelectorAll('li'));
-  const todos: ToDos[] = [];
-
-  lists.forEach(function (list) {
-      const text = list.innerText;
-      const complated = list.classList.contains('done');
-      todos.push({ text: text, complated: complated });
-  });
-  
-  //JSON形式に変換し格納
-  localStorage.setItem('todos', JSON.stringify(todos));
-};
-
-const add = (todo?:ToDos):void => {
-  let todoText = input.value;
-  const li = document.createElement('li');
-
-  if (todo) {
-      todoText = todo.text;
-  }
-
-  judge(todoText, li);
-
-  done(li);
-
-  remove(li);
-};
-
-//入力が空ではなかったら
-const judge = (todoText:string, li:HTMLElement):void => {
-  const ul = <Element>document.querySelector('.ul.active > ul');
-  if (todoText) {
-      li.innerText = todoText;
-      ul.appendChild(li);
-      input.value = '';
-      saveData();
-  }
-};
-
-//クリックで完了
-const done = (li:HTMLElement):void => {
-  li.addEventListener('click', function () {
-      li.classList.toggle('done');
-      saveData();
-  });
-};
-
-//右クリックで削除
-const remove = (li:HTMLElement):void => {
-  li.addEventListener('contextmenu', function (e) {
-      e.preventDefault();
-      li.remove();
-      saveData();
-  });
-};
-
-const removeAll = () => {
-  const removeAll = <HTMLElement>document.getElementById('removeAll');
-  
-    removeAll.addEventListener('click', function () {
-      var ul = <Element>document.querySelector('.ul.active > ul');
+      const ul = <Element>document.querySelector('.ul.active > ul');
       ul.innerHTML = '';
-      saveData();
+
+      // ローカルストレージからデータを読み込む
+      loadToDos(tabId);
+    });
   });
 };
 
-//ToDoリストを追加
-form.addEventListener('submit', function (e) {
-  e.preventDefault();
-  add();
-});
+const saveData = (tabId: string) => {
+  const ul = <Element>document.querySelector(`.ul#${tabId} > ul`);
+  const lists = Array.from(ul.querySelectorAll('li'));
+  const todos: ToDo[] = lists.map(list => ({
+    text: list.innerText,
+    completed: list.classList.contains('done')
+  }));
 
-todos = JSON.parse(json);
+  const storageKey = `todos_${tabId}`;
+  localStorage.setItem(storageKey, JSON.stringify(todos));
+};
 
-if (todos) {
-  todos.forEach(function (todo) {
-      add(todo);
+const loadToDos = (tabId: string) => {
+  const ul = <Element>document.querySelector(`.ul#${tabId} > ul`);
+
+  const storageKey = `todos_${tabId}`;
+  const json = <string>localStorage.getItem(storageKey);
+
+  const todos: ToDo[] = JSON.parse(json);
+  todos.forEach(todo => {
+    const li = document.createElement('li');
+    li.innerText = todo.text;
+    if (todo.completed) li.classList.add('done');
+
+    ul.appendChild(li);
+
+    // クリックで完了
+    doneTodo(li, tabId);
+
+    // 右クリックで削除
+    remove(li, tabId);
+  });
+};
+
+const add = () => {
+  const todoText = input.value;
+  if (!todoText) return;
+
+  const activeTab = <Element>document.querySelector('.tab > button.active');
+  const tabId = <string>activeTab.getAttribute('data-id');
+
+  const ul = <Element>document.querySelector(`.ul#${tabId} > ul`);
+
+  const li = document.createElement('li');
+  li.innerText = todoText;
+
+  ul.appendChild(li);
+  input.value = '';
+
+  // クリックで完了
+  doneTodo(li, tabId);
+
+  // 右クリックで削除
+  remove(li, tabId);
+
+  // データの保存
+  saveData(tabId);
+};
+
+// クリックで完了
+const doneTodo = (li:HTMLElement, tabId:string) => {
+  li.addEventListener('click', () => {
+    li.classList.toggle('done');
+    saveData(tabId);
   });
 }
 
-removeAll();
+// 右クリックで削除
+const remove = (li:HTMLElement, tabId:string):void => {
+  li.addEventListener('contextmenu', e => {
+    e.preventDefault();
+    li.remove();
+    saveData(tabId);
+  });
+}
+
+// 全削除
+removeAllButton?.addEventListener('click', () => {
+  if(!confirm('すべて削除します。\nよろしいですか？')) return;
+
+  const activeTab = <Element>document.querySelector('.tab > button.active');
+  const tabId = <string>activeTab.getAttribute('data-id');
+
+  const ul = <Element>document.querySelector(`.ul#${tabId} > ul`);
+
+  ul.innerHTML = '';
+  localStorage.removeItem(`todos_${tabId}`);
+});
+
+// ページ読み込み時にタブを設定
 tab();
+
+// ページ読み込み時に各タブのToDoをロード
+tabButtons.forEach(btn => {
+  const tabId = <string>btn.getAttribute('data-id');
+  loadToDos(tabId);
+});
+
+// フォーム送信時の処理を設定
+form.addEventListener('submit', e => {
+  e.preventDefault();
+  add();
+});

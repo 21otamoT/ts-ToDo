@@ -1,90 +1,104 @@
 var input = document.getElementById('input');
 var form = document.getElementById('form');
-var json = localStorage.getItem('todos');
-var todos = [];
-// タブ切り替え
+var removeAllButton = document.getElementById('removeAll');
+var tabButtons = document.querySelectorAll('.tab > button');
+var uls = document.querySelectorAll('.ul');
 var tab = function () {
-    var btns = document.querySelectorAll('.tab > button');
-    var uls = document.querySelectorAll('.ul');
-    btns.forEach(function (btn) {
+    tabButtons.forEach(function (btn) {
         btn.addEventListener('click', function () {
-            btns.forEach(function (btn) {
-                btn.classList.remove('active');
-            });
-            uls.forEach(function (ul) {
-                ul.classList.remove('active');
-            });
+            // タブの切り替え
+            tabButtons.forEach(function (btn) { return btn.classList.remove('active'); });
+            uls.forEach(function (ul) { return ul.classList.remove('active'); });
             btn.classList.add('active');
             var tabId = btn.getAttribute('data-id');
-            var tabcontent = document.getElementById(tabId);
-            tabcontent.classList.add('active');
+            var tabContent = document.getElementById(tabId);
+            tabContent.classList.add('active');
+            var ul = document.querySelector('.ul.active > ul');
+            ul.innerHTML = '';
+            // ローカルストレージからデータを読み込む
+            loadToDos(tabId);
         });
     });
 };
-var saveData = function () {
-    var lists = Array.from(document.querySelectorAll('li'));
-    var todos = [];
-    lists.forEach(function (list) {
-        var text = list.innerText;
-        var complated = list.classList.contains('done');
-        todos.push({ text: text, complated: complated });
-    });
-    //JSON形式に変換し格納
-    localStorage.setItem('todos', JSON.stringify(todos));
+var saveData = function (tabId) {
+    var ul = document.querySelector(".ul#".concat(tabId, " > ul"));
+    var lists = Array.from(ul.querySelectorAll('li'));
+    var todos = lists.map(function (list) { return ({
+        text: list.innerText,
+        completed: list.classList.contains('done')
+    }); });
+    var storageKey = "todos_".concat(tabId);
+    localStorage.setItem(storageKey, JSON.stringify(todos));
 };
-var add = function (todo) {
-    var todoText = input.value;
-    var li = document.createElement('li');
-    if (todo) {
-        todoText = todo.text;
-    }
-    judge(todoText, li);
-    done(li);
-    remove(li);
-};
-//入力が空ではなかったら
-var judge = function (todoText, li) {
-    var ul = document.querySelector('.ul.active > ul');
-    if (todoText) {
-        li.innerText = todoText;
+var loadToDos = function (tabId) {
+    var ul = document.querySelector(".ul#".concat(tabId, " > ul"));
+    var storageKey = "todos_".concat(tabId);
+    var json = localStorage.getItem(storageKey);
+    var todos = JSON.parse(json);
+    todos.forEach(function (todo) {
+        var li = document.createElement('li');
+        li.innerText = todo.text;
+        if (todo.completed)
+            li.classList.add('done');
         ul.appendChild(li);
-        input.value = '';
-        saveData();
-    }
+        // クリックで完了
+        doneTodo(li, tabId);
+        // 右クリックで削除
+        remove(li, tabId);
+    });
 };
-//クリックで完了
-var done = function (li) {
+var add = function () {
+    var todoText = input.value;
+    if (!todoText)
+        return;
+    var activeTab = document.querySelector('.tab > button.active');
+    var tabId = activeTab.getAttribute('data-id');
+    var ul = document.querySelector(".ul#".concat(tabId, " > ul"));
+    var li = document.createElement('li');
+    li.innerText = todoText;
+    ul.appendChild(li);
+    input.value = '';
+    // クリックで完了
+    doneTodo(li, tabId);
+    // 右クリックで削除
+    remove(li, tabId);
+    // データの保存
+    saveData(tabId);
+};
+// クリックで完了
+var doneTodo = function (li, tabId) {
     li.addEventListener('click', function () {
         li.classList.toggle('done');
-        saveData();
+        saveData(tabId);
     });
 };
-//右クリックで削除
-var remove = function (li) {
+// 右クリックで削除
+var remove = function (li, tabId) {
     li.addEventListener('contextmenu', function (e) {
         e.preventDefault();
         li.remove();
-        saveData();
+        saveData(tabId);
     });
 };
-var removeAll = function () {
-    var removeAll = document.getElementById('removeAll');
-    removeAll.addEventListener('click', function () {
-        var ul = document.querySelector('.ul.active > ul');
-        ul.innerHTML = '';
-        saveData();
-    });
-};
-//ToDoリストを追加
+// 全削除
+removeAllButton === null || removeAllButton === void 0 ? void 0 : removeAllButton.addEventListener('click', function () {
+    if (!confirm('すべて削除します。\nよろしいですか？'))
+        return;
+    var activeTab = document.querySelector('.tab > button.active');
+    var tabId = activeTab.getAttribute('data-id');
+    var ul = document.querySelector(".ul#".concat(tabId, " > ul"));
+    ul.innerHTML = '';
+    localStorage.removeItem("todos_".concat(tabId));
+});
+// ページ読み込み時にタブを設定
+tab();
+// ページ読み込み時に各タブのToDoをロード
+tabButtons.forEach(function (btn) {
+    var tabId = btn.getAttribute('data-id');
+    loadToDos(tabId);
+});
+// フォーム送信時の処理を設定
 form.addEventListener('submit', function (e) {
     e.preventDefault();
     add();
 });
-todos = JSON.parse(json);
-if (todos) {
-    todos.forEach(function (todo) {
-        add(todo);
-    });
-}
-removeAll();
-tab();
