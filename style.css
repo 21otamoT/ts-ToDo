@@ -45,7 +45,7 @@ h1 {
 }
 
 li {
-  border-left: 3px solid #00ff00;
+  border-left: 3px solid red;
   padding: 8px;
   margin: 8px 0 0;
   list-style: none;
