@@ -17,12 +17,11 @@ const tab = () => {
       uls.forEach(ul => ul.classList.remove('active'));
 
       btn.classList.add('active');
-      const tabId = <string>btn.getAttribute('data-id');
-      const tabContent = <HTMLElement>document.getElementById(tabId);
-      tabContent.classList.add('active');
 
-      const ul = <Element>document.querySelector('.ul.active > ul');
-      ul.innerHTML = '';
+      const tabId = <string>btn.getAttribute('data-id');
+      const tabContent = <HTMLElement>document.querySelector(`.ul#${tabId}`);
+      tabContent.classList.add('active');
+      tabContent.innerHTML = '<ul></ul>';
 
       // ローカルストレージからデータを読み込む
       loadToDos(tabId);
@@ -44,24 +43,25 @@ const saveData = (tabId: string) => {
 
 const loadToDos = (tabId: string) => {
   const ul = <Element>document.querySelector(`.ul#${tabId} > ul`);
-
   const storageKey = `todos_${tabId}`;
   const json = <string>localStorage.getItem(storageKey);
 
-  const todos: ToDo[] = JSON.parse(json);
-  todos.forEach(todo => {
-    const li = document.createElement('li');
-    li.innerText = todo.text;
-    if (todo.completed) li.classList.add('done');
+  if(json) {
+    const todos: ToDo[] = JSON.parse(json);
+    todos.map(todo => {
+      const li = document.createElement('li');
+      li.innerText = todo.text;
+      if (todo.completed) li.classList.add('done');
+      ul.appendChild(li);
 
-    ul.appendChild(li);
+      // クリックで完了
+      doneTodo(li, tabId);
 
-    // クリックで完了
-    doneTodo(li, tabId);
-
-    // 右クリックで削除
-    remove(li, tabId);
-  });
+      // 右クリックで削除
+      remove(li, tabId);
+    });
+  }
+  
 };
 
 const add = () => {
