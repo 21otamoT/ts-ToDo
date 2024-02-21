@@ -13,21 +13,33 @@
   <div class="container">
     <h1>ToDoリスト</h1>
     <div class="tab">
-      <button data-id="one" class="active">買い物</button>
-      <button data-id="two">やること</button>
+      <button data-id="one" class="active">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M440-600v-120H320v-80h120v-120h80v120h120v80H520v120h-80ZM280-80q-33 0-56.5-23.5T200-160q0-33 23.5-56.5T280-240q33 0 56.5 23.5T360-160q0 33-23.5 56.5T280-80Zm400 0q-33 0-56.5-23.5T600-160q0-33 23.5-56.5T680-240q33 0 56.5 23.5T760-160q0 33-23.5 56.5T680-80ZM40-800v-80h131l170 360h280l156-280h91L692-482q-11 20-29.5 31T622-440H324l-44 80h480v80H280q-45 0-68.5-39t-1.5-79l54-98-144-304H40Z"/></svg>
+        買い物
+      </button>
+      <button data-id="two">
+        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m438-240 226-226-58-58-169 169-84-84-57 57 142 142ZM240-80q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v480q0 33-23.5 56.5T720-80H240Zm280-520v-200H240v640h480v-440H520ZM240-800v200-200 640-640Z"/></svg>
+        やること
+      </button>
     </div>
     
     <div class="ul active" id="one">
       <ul></ul>
     </div>
     <div class="ul" id="two">
-      <ul><li>a</li></ul>
+      <ul></ul>
     </div>
     <div class="form">
       <form id="form">
         <input type="text" id="input">
-        <button class="add">追加</button>
-        <button id="removeAll">全削除</button>
+        <button class="add">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
+          追加
+        </button>
+        <button id="removeAll">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+          全削除
+        </button>
       </form>
     
       <footer class="copy">&copy;2024 HIROSE YUKIHIRO All rights reserved</footer>

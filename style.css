@@ -19,6 +19,12 @@ h1 {
   border-bottom: 2px solid #ccc;
 }
 
+button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .tab {
   display: flex;
 }
@@ -36,6 +42,10 @@ h1 {
   font-size: 24px;
   color: #fff;
   background-color: #deb887;
+}
+
+.tab > .active > svg {
+  fill: #fff;
 }
 
 .ul.active {
@@ -83,11 +93,19 @@ form input {
   padding: 4px;
 }
 
+.add > svg {
+  fill: #00ff00;
+}
+
 #removeAll {
   border: 2px solid red;
   border-radius: 8px;
   background-color: #fff;
   color: #dc143c;
+}
+
+#removeAll > svg {
+  fill: red;
 }
 
 .copy {
