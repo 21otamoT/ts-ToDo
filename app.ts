@@ -82,6 +82,8 @@ const add = () => {
 
   // 右クリックで削除
   remove(li, tabId);
+  
+  edit(li, tabId);
 
   // データの保存
   saveData(tabId);
@@ -101,6 +103,22 @@ const remove = (li:HTMLElement, tabId:string):void => {
     e.preventDefault();
     li.remove();
     saveData(tabId);
+  });
+}
+
+// 編集機能
+const edit = (li:HTMLElement, tabId:string):void => {
+  li.addEventListener('dblclick',() => {
+    li.contentEditable = 'true';
+    li.focus();
+  });
+  li.addEventListener('blur',() => {
+    li.contentEditable = 'false';
+    const newText = li.innerText;
+    if (newText !== '') {
+      li.innerHTML = newText;
+      saveData(tabId);
+    }
   });
 }
 

@@ -66,12 +66,14 @@ li {
   padding: 8px;
   margin: 8px auto 0;
   list-style: none;
-  box-shadow: 4px 4px 8px #aaa;
+  box-shadow: 2px 2px 4px #aaa;
+  border-radius: 4px;
 }
 
 .done {
   text-decoration: line-through;
   color: #aaa;
+  opacity: 0.5;
 }
 
 form {

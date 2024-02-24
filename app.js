@@ -63,6 +63,7 @@ var add = function () {
     doneTodo(li, tabId);
     // 右クリックで削除
     remove(li, tabId);
+    edit(li, tabId);
     // データの保存
     saveData(tabId);
 };
@@ -79,6 +80,21 @@ var remove = function (li, tabId) {
         e.preventDefault();
         li.remove();
         saveData(tabId);
+    });
+};
+// 編集機能
+var edit = function (li, tabId) {
+    li.addEventListener('dblclick', function () {
+        li.contentEditable = 'true';
+        li.focus();
+    });
+    li.addEventListener('blur', function () {
+        li.contentEditable = 'false';
+        var newText = li.innerText;
+        if (newText !== '') {
+            li.innerHTML = newText;
+            saveData(tabId);
+        }
     });
 };
 // 全削除
